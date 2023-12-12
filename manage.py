@@ -3,6 +3,10 @@
 import os
 import sys
 
+from apscheduler.schedulers.background import BackgroundScheduler
+
+from config import settings
+
 
 def main():
     """Run administrative tasks."""
@@ -16,6 +20,9 @@ def main():
             "forget to activate a virtual environment?"
         ) from exc
     execute_from_command_line(sys.argv)
+
+    #scheduler = BackgroundScheduler(timezone=settings.SCHEDULER_TIMEZONE)
+    #scheduler.start()
 
 
 if __name__ == '__main__':

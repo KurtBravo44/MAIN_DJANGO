@@ -1,12 +1,11 @@
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 from mailings.models import Mailing, LogMailing
-from mailings.services import qq
 
-import schedule
+
 
 class MailingListView(ListView):
     model = Mailing

@@ -20,11 +20,14 @@ from django.urls import path, include
 
 from config import settings
 
+#from mailings.tasks import schedule_mailings
+#schedule_mailings()
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('clients.urls', namespace='clients')),
     path('mailings/', include('mailings.urls', namespace='mailings')),
-
+    #path('start-schedule_mailings/', lambda request: None, name='start-schedule_mailings')
 ]
 
 if settings.DEBUG:

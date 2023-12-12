@@ -5,7 +5,7 @@ from email.mime.multipart import MIMEMultipart
 import dotenv
 import os
 
-from mailings.models import Mailing
+
 
 dotenv.load_dotenv()
 from_mail = os.getenv('MY_MAIL')
@@ -26,7 +26,6 @@ def send_mail(_to_mail, _subject ,_message):
     server.sendmail(from_mail, to_email, msg.as_string())
     server.quit()
 
-def qq():
-    print('hi!asdasdasdasdasdasd AAAAAAA')
+
 
 
