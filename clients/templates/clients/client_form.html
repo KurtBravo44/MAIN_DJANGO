@@ -1,0 +1,30 @@
+{% extends 'clients/layout.html' %}
+
+{% block body %}
+<div class="row-12">
+
+    <div class="row">
+        <div class="col-6">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="mb-3">Заполни данные</h4><br>
+
+                        <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <button type="submit" class="btn btn-success">
+                                {% if object %}
+                                Сохранить
+                                {% else %}
+                                Создать клиента
+                                {% endif %}
+                            </button>
+
+                        </form>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    {% endblock %}
