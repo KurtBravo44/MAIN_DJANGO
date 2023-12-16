@@ -10,77 +10,60 @@ from mailings.services import send_mail
 tz = 'Europe/Moscow'
 utc = pytz.UTC
 
-def my_background_task(obj_id):
-    obj = Mailing.objects.get(id=obj_id)
-    logs = LogMailing.objects.get(id=obj_id)
+def my_background_task():
+    objects = Mailing.objects.all()
+
     try:
-        cur_time = datetime.datetime.now().replace(tzinfo=utc)
 
-        if cur_time >= obj.start.replace(tzinfo=utc) and cur_time <= obj.stop.replace(tzinfo=utc):
-            obj.status = 'active'
+        for obj in objects:
 
-            obj.save()
+            if datetime.datetime.now().replace(tzinfo=utc)>= obj.start.replace(tzinfo=utc) and datetime.datetime.now().replace(tzinfo=utc) <= obj.stop.replace(tzinfo=utc):
+                obj.status = 'active'
+                obj.save()
 
-            send_mail(_to_mail=obj.owner.email,
-                      _message=obj.message_body,
-                      _subject=obj.message_title)
+                if datetime.datetime.now().replace(tzinfo=utc).strftime("%H:%M") == obj.start.replace(tzinfo=utc).strftime("%H:%M"):
+                    print('ok')
+                    if obj.period == 'daily':
+                        send_mail(_to_mail=obj.owner.email,
+                                  _message=obj.message_body,
+                                  _subject=obj.message_title)
+                    elif obj.periods == 'weekly':
+                        if datetime.datetime.now().replace(tzinfo=utc).weekday() == obj.start.weekday():
+                            send_mail(_to_mail=obj.owner.email,
+                                      _message=obj.message_body,
+                                      _subject=obj.message_title)
+                    elif obj.periods == 'monthly':
+                        if datetime.datetime.now().replace(tzinfo=utc).weekday() == obj.start.weekday() and obj.start.day == datetime.datetime.now().replace(tzinfo=utc).day:
+                            send_mail(_to_mail=obj.owner.email,
+                                      _message=obj.message_body,
+                                      _subject=obj.message_title)
 
 
-        elif cur_time > obj.stop.replace(tzinfo=utc):
-            obj.status = 'finish'
-            obj.save()
-        else:
-            obj.status = 'ready'
-            obj.save()
+            elif datetime.datetime.now().replace(tzinfo=utc) > obj.stop.replace(tzinfo=utc):
+                obj.status = 'finish'
+                obj.save()
+            else:
+                obj.status = 'ready'
+                obj.save()
 
+            logs = LogMailing.objects.get(id=obj.id)
 
-        logs.response = '200'
-        logs.date_try = cur_time
-        logs.status_try = 'ok'
-        logs.save()
+            logs.response = '200'
+            logs.date_try = datetime.datetime.now().replace(tzinfo=utc)
+            logs.status_try = 'ok'
+            logs.save()
 
 
 
     except Exception as ex:
         print(ex)
 
-        logs.date_try = cur_time
+        logs.date_try = datetime.datetime.now().replace(tzinfo=utc)
         logs.status_try = 'bad'
         logs.response = '400'
         logs.save()
 
 
-
-def schedule_mailings():
-    scheduler = BackgroundScheduler()
-    objects = Mailing.objects.all()
-
-
-    for obj in objects:
-        job_id = f'j_{obj.id}'
-
-        if obj.period == 'daily':
-            trigger = CronTrigger(hour=obj.start.hour,
-                                  minute=obj.start.minute,
-                                  day="*")
-        elif obj.periods == 'weekly':
-            trigger = CronTrigger(hour=obj.start.hour,
-                                  minute=obj.start.minute,
-                                  day_of_week=obj.start.weekday())
-        elif obj.periods == 'monthly':
-            trigger = CronTrigger(hour=obj.start.hour,
-                                  minute=obj.start.minute,
-                                  day=obj.start.day)
-        else:
-            print(f"Invalid period {obj.period} for mailing with id {obj.id}")
-            continue
-
-        scheduler.add_job(my_background_task,
-                          trigger=trigger,
-                          args=[obj.id],
-                          id=job_id)
-
-    scheduler.start()
 
 
 

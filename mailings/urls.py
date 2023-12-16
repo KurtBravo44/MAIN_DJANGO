@@ -6,8 +6,8 @@ from mailings.views import MailingListView, MailingCreateView, MailingUpdateView
 app_name = MailingsConfig.name
 
 
-from mailings.tasks import schedule_mailings
-schedule_mailings()
+#from mailings.tasks import schedule_mailings
+#schedule_mailings()
 
 urlpatterns = [
     path('', MailingListView.as_view(), name='mailings_list'),
