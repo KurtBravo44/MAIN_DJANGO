@@ -1,4 +1,6 @@
-{% extends 'clients/layout.html' %}
+{% extends 'users/layout.html' %}
+
+{% load crispy_forms_tags %}
 
 {% block body %}
 <div class="row-12">
@@ -11,12 +13,12 @@
 
                         <form method="post" enctype="multipart/form-data">
                             {% csrf_token %}
-                            {{ form.as_p }}
+                            {{ form|crispy }}
                             <button type="submit" class="btn btn-success">
                                 {% if object %}
                                 Сохранить
                                 {% else %}
-                                Создать клиента
+                                Создать пост
                                 {% endif %}
                             </button>
 

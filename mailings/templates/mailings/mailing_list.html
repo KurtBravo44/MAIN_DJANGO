@@ -1,4 +1,10 @@
-{% extends 'clients/layout.html' %}
+{% extends 'users/layout.html' %}
+
+{% block title %}
+<h2>Система рассылок</h2>
+            <p class="lead"></p>
+{% endblock %}
+
 
 {% block body %}
 
@@ -11,11 +17,16 @@
         <br>
         <p class="card-text">{{object.status}}</p>
 
-        <a href="{% url 'mailings:mailing_update' pk=object.pk %}" class="card-link">Изменить</a>
+        {% if object.owner == request.user or user.is_staff %}
+            {% if object.owner == request.user %}
+                <a href="{% url 'mailings:mailing_update' pk=object.pk %}" class="card-link">Изменить</a>
+                <a href="{% url 'mailings:logs' pk=object.pk %}" class="card-link">ЛОГИ</a>
+            {% endif %}
+            <br>
 
-        <a href="{% url 'mailings:mailing_delete' pk=object.pk %}" class="card-link">Удалить</a>
-        <br>
-        <a href="#" class="card-link">ЛОГИ</a>
+            <a href="{% url 'mailings:mailing_delete' pk=object.pk %}" class="card-link">Удалить</a>
+
+        {% endif %}
     </div>
 </div>
 

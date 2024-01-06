@@ -18,6 +18,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 
+from blog.views import main
 from config import settings
 
 #from mailings.tasks import schedule_mailings
@@ -25,9 +26,12 @@ from config import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('clients.urls', namespace='clients')),
+
+    path('', main),
+
     path('mailings/', include('mailings.urls', namespace='mailings')),
-    #path('start-schedule_mailings/', lambda request: None, name='start-schedule_mailings')
+    path('user/', include('users.urls', namespace='users')),
+    path('blog/', include('blog.urls', namespace='blog'))
 ]
 
 if settings.DEBUG:

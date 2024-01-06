@@ -1,8 +1,11 @@
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.http import Http404
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 
+from mailings.forms import MailingForm
 from mailings.models import Mailing, LogMailing
 
 
@@ -10,33 +13,57 @@ from mailings.models import Mailing, LogMailing
 class MailingListView(ListView):
     model = Mailing
 
-class MailingCreateView(CreateView):
+class MailingCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Mailing
-    fields = ('owner', 'message_title', 'message_body', 'start', 'stop', 'period',)
+    #fields = ('owner', 'message_title', 'message_body', 'start', 'stop', 'period',)
+    form_class = MailingForm
     success_url = reverse_lazy('mailings:mailings_list')
+
+    login_url = 'users:login'
+    permission_required = 'mailings.add_mailing'
 
     def form_valid(self, form):
         if form.is_valid():
             new_mailing = form.save()
+            new_mailing.owner = self.request.user
             new_mailing.save()
 
         return super().form_valid(form)
 
 
-class MailingUpdateView(UpdateView):
+class MailingUpdateView(LoginRequiredMixin,PermissionRequiredMixin, UpdateView):
     model = Mailing
     fields = ('owner', 'message_title', 'message_body', 'start', 'stop', 'period',)
     success_url = reverse_lazy('mailings:mailings_list')
 
+    permission_required = 'mailings.change_mailing'
+    login_url = 'users:login'
     def form_valid(self, form):
         if form.is_valid():
             new_mailing = form.save()
-            new_mailing.save()
+            if new_mailing.owner == self.request.user:
+                new_mailing.save()
+            else:
+                raise Http404
 
         return super().form_valid(form)
 
-class MailingDeleteView(DeleteView):
+class MailingDeleteView(LoginRequiredMixin, DeleteView):
     model = Mailing
     success_url = reverse_lazy('mailings:mailings_list')
+    login_url = 'users:login'
 
+    def dispatch(self, request, *args, **kwargs):
+        obj = self.get_object()
 
+        # Проверяем, принадлежит ли рассылка текущему пользователю
+        if obj.owner == request.user or request.user.is_staff == True:
+            return super().dispatch(request, *args, **kwargs)
+        else:
+            raise Http404
+
+class LogDetailView(LoginRequiredMixin, DetailView):
+    model = LogMailing
+    template_name = 'mailings/logs_detail.html'
+
+    login_url = 'users:login'

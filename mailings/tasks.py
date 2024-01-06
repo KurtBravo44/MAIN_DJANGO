@@ -18,7 +18,7 @@ def my_background_task():
         for obj in objects:
 
             if datetime.datetime.now().replace(tzinfo=utc)>= obj.start.replace(tzinfo=utc) and datetime.datetime.now().replace(tzinfo=utc) <= obj.stop.replace(tzinfo=utc):
-                obj.status = 'active'
+                obj.status = 'Активна'
                 obj.save()
 
                 if datetime.datetime.now().replace(tzinfo=utc).strftime("%H:%M") == obj.start.replace(tzinfo=utc).strftime("%H:%M"):
@@ -40,10 +40,10 @@ def my_background_task():
 
 
             elif datetime.datetime.now().replace(tzinfo=utc) > obj.stop.replace(tzinfo=utc):
-                obj.status = 'finish'
+                obj.status = 'Неактивна'
                 obj.save()
             else:
-                obj.status = 'ready'
+                obj.status = 'Неактивна'
                 obj.save()
 
             logs = LogMailing.objects.get(id=obj.id)

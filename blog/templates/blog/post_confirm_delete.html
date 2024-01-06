@@ -1,4 +1,4 @@
-{% extends 'clients/layout.html' %}
+{% extends 'users/layout.html' %}
 
 {% block body %}
 <div class="col-12">
@@ -8,9 +8,9 @@
                 <div class="card-body">
                     <form method="post">
                         {% csrf_token %}
-                        <p>Хотите удалить клиента? "{{ object.first_name }} {{ object.last_name }}"</p>
+                        <p>Хотите удалить запись? "{{ object.title }}"</p>
                         <button type="submit" class="btn btn-danger">Подтвердить?</button>
-                        <a href="{% url 'clients:clients_list' %}" class="btn btn-warning">Отмена</a>
+                        <a href="{% url 'mailings:mailings_list' %}" class="btn btn-warning">Отмена</a>
                     </form>
                 </div>
             </div>

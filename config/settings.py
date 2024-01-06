@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 from pathlib import Path
 
+import dotenv
+dotenv.load_dotenv()
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -41,10 +45,18 @@ INSTALLED_APPS = [
     'django_apscheduler',
 
 
-    'clients',
+
     'mailings',
+    'blog',
+    'users',
+
+    'crispy_forms',
+    'crispy_bootstrap5',
 
 ]
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -88,7 +100,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'django_main',
         'USER': 'postgres',
-        'PASSWORD': '2344'
+        'PASSWORD': os.getenv('DB_PASS')
     }
 }
 
@@ -178,3 +190,18 @@ LOGGING = {
 SCHEDULER_AUTOSTART = True
 SCHEDULER_TIMEZONE = 'Europe/Moscow'
 SCHEDULER_API_ENABLED = False
+
+AUTH_USER_MODEL = 'users.User'
+LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/'
+
+CACHE_ENABLED=os.getenv('CACHE_ENABLED')
+
+if CACHE_ENABLED:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": "redis://127.0.0.1:6379",
+
+        }
+    }

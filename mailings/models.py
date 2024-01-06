@@ -1,24 +1,32 @@
 from django.db import models
 
 
-from clients.models import Client, NULLABLE
 
+from config import settings
 
-periods =(
+NULLABLE = {'null':True, 'blank':True}
+
+periods = (
     ('daily', 'Ежедневная'),
     ('weekly', 'Еженедельная'),
     ('monthly', 'Ежемесячная'),
 )
 
+statuses = (
+    ('active', 'Активна'),
+    ('disable', 'Неактивна')
+)
+
 class Mailing(models.Model):
-    owner = models.ForeignKey(Client, on_delete=models.CASCADE, verbose_name='владелец', **NULLABLE)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, **NULLABLE, verbose_name='владелец')
+
     message_title = models.CharField(max_length=100, verbose_name='тема письма')
     message_body = models.TextField(verbose_name='тело письма')
 
     start = models.DateTimeField(verbose_name='начало')
     stop = models.DateTimeField(verbose_name='конец')
     period = models.CharField(max_length=25, choices=periods, default='daily', verbose_name='период')
-    status = models.CharField(max_length=25, verbose_name='статус', **NULLABLE)
+    status = models.CharField(max_length=25, default='Неактивна', choices=statuses, verbose_name='статус', **NULLABLE)
 
     def __str__(self):
         return f'Рассылка: {self.owner}'
@@ -31,9 +39,9 @@ class Mailing(models.Model):
 
 class LogMailing(models.Model):
     mailing_key = models.ForeignKey(Mailing, on_delete=models.CASCADE, verbose_name='рассылка', **NULLABLE)
-    date_try = models.DateTimeField(verbose_name='последняя попытка', **NULLABLE)
-    status_try = models.CharField(max_length=25, verbose_name='статус попытки', **NULLABLE)
-    response = models.TextField(verbose_name='ответ сервера', **NULLABLE)
+    date_try = models.DateTimeField(verbose_name='последняя попытка', **NULLABLE, default='Попытки не было')
+    status_try = models.CharField(max_length=25, verbose_name='статус попытки', **NULLABLE, default='Попытки не было')
+    response = models.TextField(verbose_name='ответ сервера', **NULLABLE, default='Попытки не было')
 
     def __str__(self):
         return f'Логи рассылки: {self.mailing_key}'
