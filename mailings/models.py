@@ -39,7 +39,7 @@ class Mailing(models.Model):
 
 class LogMailing(models.Model):
     mailing_key = models.ForeignKey(Mailing, on_delete=models.CASCADE, verbose_name='рассылка', **NULLABLE)
-    date_try = models.DateTimeField(verbose_name='последняя попытка', **NULLABLE, default='Попытки не было')
+    date_try = models.DateTimeField(verbose_name='последняя попытка', **NULLABLE, )
     status_try = models.CharField(max_length=25, verbose_name='статус попытки', **NULLABLE, default='Попытки не было')
     response = models.TextField(verbose_name='ответ сервера', **NULLABLE, default='Попытки не было')
 

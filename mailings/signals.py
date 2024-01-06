@@ -5,7 +5,7 @@ from mailings.models import Mailing, LogMailing
 
 
 @receiver(post_save, sender=Mailing)
-def post_save_mailing(created, **kwargs):
-    instance = kwargs['instance']
+def post_save_mailing(sender, instance, created, **kwargs):
+
     if created:
         LogMailing.objects.create(mailing_key=instance, id=instance.id)
