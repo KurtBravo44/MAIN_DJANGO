@@ -1,13 +1,15 @@
 import random
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, Permission
+from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import render, redirect
 from django.contrib.auth.views import LoginView as BaseLoginView
 from django.contrib.auth.views import LogoutView as BaseLogoutView
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, UpdateView, ListView, DetailView
 
+from blog.models import Post
 from mailings.services import send_mail
 from users.forms import UserForm, ProfileForm, ManagerForm
 from users.models import User
@@ -38,11 +40,8 @@ class RegisterView(CreateView):
                      f'http://127.0.0.1:8000/user/verificate/?c={code}&m={user_mail}'
         )
         new_user.ver_code = code
-        ###
 
-        my_group = Group.objects.get(name='Клиенты')
-        my_group.user_set.add(new_user)
-        ###
+
         return super().form_valid(form)
 
 

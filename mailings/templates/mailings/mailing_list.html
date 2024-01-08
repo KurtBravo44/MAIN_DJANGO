@@ -8,6 +8,32 @@
 
 {% block body %}
 
+
+
+<div class="row">
+    {% if not request.user.client_set.exists %}
+    <div class="col-4">
+
+        <button type="button" class="btn btn-lg  btn-success mb-5"
+                            onclick="window.location.href='{% url 'clients:create' %}'">Стать клиентом
+                    </button>
+                    <br>
+
+    </div>
+    {% endif %}
+
+    {% if request.user.client_set.exists %}
+    <div class="col-4">
+        <button type="button" class="btn btn-lg  btn-success mb-5"
+                            onclick="window.location.href='{% url 'mailings:mailing_create' %}'">Создать рассылку
+                    </button>
+                    <br>
+
+    </div>
+    {% endif %}
+</div>
+
+
 {% for object in object_list %}
 
 <div class="card" style="width: 18rem;">

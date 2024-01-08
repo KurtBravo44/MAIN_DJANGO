@@ -6,6 +6,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView, DetailView
 
 from blog.models import Post
+from clients.models import Client
 from config.settings import CACHE_ENABLED
 from mailings.models import Mailing
 from users.models import User
@@ -60,18 +61,18 @@ def main(request):
 
     posts = Post.objects.all()[:3]
 
+
+
     if CACHE_ENABLED:
 
         key = f'clients_count'
         clients_count = cache.get(key)
         if clients_count is None:
-            clients_group = Group.objects.get(name='Клиенты')
-            clients_count = clients_group.user_set.count()
-
+            clients_count = len(Client.objects.all())
             cache.set(key, clients_count)
     else:
-        clients_group = Group.objects.get(name='Клиенты')
-        clients_count = clients_group.user_set.count()
+        clients_count = len(Client.objects.all()) + 1
+
 
 
     context = {

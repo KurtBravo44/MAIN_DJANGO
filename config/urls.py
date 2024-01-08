@@ -26,9 +26,8 @@ from config import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-
     path('', main),
-
+    path('clients/', include('clients.urls', namespace='clients')),
     path('mailings/', include('mailings.urls', namespace='mailings')),
     path('user/', include('users.urls', namespace='users')),
     path('blog/', include('blog.urls', namespace='blog'))

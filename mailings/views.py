@@ -15,7 +15,6 @@ class MailingListView(ListView):
 
 class MailingCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
     model = Mailing
-    #fields = ('owner', 'message_title', 'message_body', 'start', 'stop', 'period',)
     form_class = MailingForm
     success_url = reverse_lazy('mailings:mailings_list')
 
