@@ -48,7 +48,7 @@ class RegisterView(CreateView):
 class UserUpdateView(LoginRequiredMixin, UpdateView):
     model = User
     template_name = 'users/profile_form.html'
-    success_url = reverse_lazy('users:profile')
+    success_url = reverse_lazy('users:users_list')
     #form_class = ProfileForm
 
     login_url = 'users:login'
@@ -59,8 +59,8 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
         else:
             return ProfileForm
 
-    def get_object(self, queryset=None):
-        return self.request.user
+    #def get_object(self, queryset=None):
+    #    return self.request.user
 
 class UserListView(ListView):
     model = User
