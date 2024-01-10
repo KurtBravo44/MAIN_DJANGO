@@ -43,8 +43,8 @@
         <br>
         <p class="card-text">{{object.status}}</p>
 
-        {% if object.owner == request.user or user.is_staff %}
-            {% if object.owner == request.user %}
+        {% if object.owner.id == request.user.id or user.is_staff %}
+            {% if object.owner.id == request.user.id %}
                 <a href="{% url 'mailings:mailing_update' pk=object.pk %}" class="card-link">Изменить</a>
                 <a href="{% url 'mailings:logs' pk=object.pk %}" class="card-link">ЛОГИ</a>
             {% endif %}

@@ -1,7 +1,6 @@
 from django.db import models
 
-
-
+from clients.models import Client
 from config import settings
 
 NULLABLE = {'null':True, 'blank':True}
@@ -18,7 +17,7 @@ statuses = (
 )
 
 class Mailing(models.Model):
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, **NULLABLE, verbose_name='владелец')
+    owner = models.ForeignKey(Client, on_delete=models.SET_NULL, **NULLABLE, verbose_name='владелец')
 
     message_title = models.CharField(max_length=100, verbose_name='тема письма')
     message_body = models.TextField(verbose_name='тело письма')

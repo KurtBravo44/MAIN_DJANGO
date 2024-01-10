@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os
+import smtplib
 from pathlib import Path
 
 import dotenv
@@ -24,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-d3$z)&2*809or8q3#_5^s7kbf2b#-%i3(%-rf0ffn2ijb0r)#m'
+SECRET_KEY = os.getenv('DJANGO_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -98,7 +99,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'django_main',
+        'NAME': os.getenv('DB_NAME'),
         'USER': 'postgres',
         'PASSWORD': os.getenv('DB_PASS')
     }
@@ -208,3 +209,8 @@ if CACHE_ENABLED:
 
         }
     }
+
+#send_mail_settings
+FROM_MAIL = os.getenv('FROM_MAIL')
+MAIL_KEY = os.getenv('MAIL_KEY')
+SMTP_SERVER = smtplib.SMTP('smtp.mail.ru: 25')

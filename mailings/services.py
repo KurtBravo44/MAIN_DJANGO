@@ -2,14 +2,10 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-import dotenv
-import os
 
 
+from config.settings import SMTP_SERVER, FROM_MAIL, MAIL_KEY
 
-dotenv.load_dotenv()
-from_mail = os.getenv('MY_MAIL')
-my_pass = os.getenv('MY_PASS')
 
 def send_mail(_to_mail, _subject ,_message):
     msg = MIMEMultipart()
@@ -20,10 +16,10 @@ def send_mail(_to_mail, _subject ,_message):
     msg.attach(MIMEText(message, 'plain'))
     msg['Subject'] = _subject
 
-    server = smtplib.SMTP('smtp.mail.ru: 25')
+    server = SMTP_SERVER
     server.starttls()
-    server.login(from_mail, my_pass)
-    server.sendmail(from_mail, to_email, msg.as_string())
+    server.login(FROM_MAIL, MAIL_KEY)
+    server.sendmail(FROM_MAIL, to_email, msg.as_string())
     server.quit()
 
 

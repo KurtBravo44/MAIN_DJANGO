@@ -5,6 +5,7 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 
+from clients.models import Client
 from mailings.forms import MailingForm
 from mailings.models import Mailing, LogMailing
 
@@ -24,7 +25,7 @@ class MailingCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView)
     def form_valid(self, form):
         if form.is_valid():
             new_mailing = form.save()
-            new_mailing.owner = self.request.user
+            new_mailing.owner = Client.objects.get(pk=self.request.user.pk)
             new_mailing.save()
 
         return super().form_valid(form)
@@ -32,7 +33,7 @@ class MailingCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView)
 
 class MailingUpdateView(LoginRequiredMixin,PermissionRequiredMixin, UpdateView):
     model = Mailing
-    fields = ('owner', 'message_title', 'message_body', 'start', 'stop', 'period',)
+    fields = ('message_title', 'message_body', 'start', 'stop', 'period',)
     success_url = reverse_lazy('mailings:mailings_list')
 
     permission_required = 'mailings.change_mailing'
@@ -40,7 +41,7 @@ class MailingUpdateView(LoginRequiredMixin,PermissionRequiredMixin, UpdateView):
     def form_valid(self, form):
         if form.is_valid():
             new_mailing = form.save()
-            if new_mailing.owner == self.request.user:
+            if new_mailing.owner == Client.objects.get(pk=self.request.user.pk):
                 new_mailing.save()
             else:
                 raise Http404
@@ -56,7 +57,7 @@ class MailingDeleteView(LoginRequiredMixin, DeleteView):
         obj = self.get_object()
 
         # Проверяем, принадлежит ли рассылка текущему пользователю
-        if obj.owner == request.user or request.user.is_staff == True:
+        if obj.owner == Client.objects.get(pk=self.request.user.pk) or request.user.is_staff == True:
             return super().dispatch(request, *args, **kwargs)
         else:
             raise Http404
