@@ -71,7 +71,7 @@ def main(request):
             clients_count = len(Client.objects.all())
             cache.set(key, clients_count)
     else:
-        clients_count = len(Client.objects.all()) + 1
+        clients_count = len(Client.objects.all())
 
 
 
