@@ -24,17 +24,17 @@ def my_background_task():
                 if datetime.datetime.now().replace(tzinfo=utc).strftime("%H:%M") == obj.start.replace(tzinfo=utc).strftime("%H:%M"):
                     print('ok')
                     if obj.period == 'daily':
-                        send_mail(_to_mail=obj.owner.email,
+                        send_mail(_to_mail=obj.owner.user.email,
                                   _message=obj.message_body,
                                   _subject=obj.message_title)
                     elif obj.periods == 'weekly':
                         if datetime.datetime.now().replace(tzinfo=utc).weekday() == obj.start.weekday():
-                            send_mail(_to_mail=obj.owner.email,
+                            send_mail(_to_mail=obj.owner.user.email,
                                       _message=obj.message_body,
                                       _subject=obj.message_title)
                     elif obj.periods == 'monthly':
                         if datetime.datetime.now().replace(tzinfo=utc).weekday() == obj.start.weekday() and obj.start.day == datetime.datetime.now().replace(tzinfo=utc).day:
-                            send_mail(_to_mail=obj.owner.email,
+                            send_mail(_to_mail=obj.owner.user.email,
                                       _message=obj.message_body,
                                       _subject=obj.message_title)
 
